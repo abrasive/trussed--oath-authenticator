@@ -111,7 +111,7 @@ impl AnswerToSelect {
 
 impl<T> Authenticator<T>
 where
-    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::Sha256,
+    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::HmacSha512 + client::Sha256,
 {
     // const CREDENTIAL_DIRECTORY: &'static str = "cred";
     fn credential_directory() -> PathBuf {
@@ -762,7 +762,7 @@ impl<T> iso7816::App for Authenticator<T> {
 #[cfg(feature = "apdu-dispatch")]
 impl<T, const C: usize, const R: usize> apdu_dispatch::app::App<C, R> for Authenticator<T>
 where
-    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::Sha256,
+    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::HmacSha512 + client::Sha256,
 {
     fn select(&mut self, apdu: &iso7816::Command<C>, reply: &mut Data<R>) -> Result {
         self.respond(apdu, reply)

@@ -13,7 +13,7 @@ use crate::oath;
 pub fn calculate<T>(trussed: &mut T, algorithm: oath::Algorithm, challenge: &[u8], key: KeyId)
     -> [u8; 4]
 where
-    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::Sha256,
+    T: client::Client + client::HmacSha1 + client::HmacSha256 + client::HmacSha512 + client::Sha256,
 {
     use oath::Algorithm::*;
     let truncated = match algorithm {
@@ -25,7 +25,10 @@ where
             let digest = syscall!(trussed.sign_hmacsha256(key, challenge)).signature;
             dynamic_truncation(&digest)
         }
-        Sha512 => unimplemented!(),
+        Sha512 => {
+            let digest = syscall!(trussed.sign_hmacsha512(key, challenge)).signature;
+            dynamic_truncation(&digest)
+        }
     };
 
     truncated.to_be_bytes()
